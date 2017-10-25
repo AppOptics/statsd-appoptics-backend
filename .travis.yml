@@ -1,0 +1,11 @@
+language: node_js
+node_js: 
+  - "stable"
+  - "6"
+  - "4"
+matrix:
+  fast_finish: true
+before_script:
+  - npm install -g nodeunit
+notifications:
+  email: false
