@@ -1,0 +1,55 @@
+{
+  "author": "Mike Heffner <mike@solarwinds.cloud>",
+  "name": "statsd-appoptics-backend",
+  "description": "A StatsD backend for AppOptics Metrics",
+  "version": "1.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/appoptics/statsd-appoptics-backend",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/appoptics/statsd-appoptics-backend.git"
+  },
+  "contributors": [
+    {
+      "name": "Bryan Mikaelian",
+      "email": "bryan@solarwinds.cloud"
+    },
+    {
+      "name": "Michael Beale",
+      "email": "mbeale@solarwinds.cloud"
+    }
+  ],
+  "keywords": [
+    "appoptics",
+    "metrics",
+    "statsd"
+  ],
+  "engines": {
+    "node": ">=0.8"
+  },
+  "dependencies": {
+    "extend": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-config-google": "^0.7.1",
+    "eslint-plugin-import": "^2.2.0",
+    "nock": "^9.0.13",
+    "nodeunit": "^0.11.0",
+    "pre-commit": "^1.2.2",
+    "sinon": "^2.1.0"
+  },
+  "main": "lib/appoptics.js",
+  "scripts": {
+    "test": "nodeunit",
+    "lint": "eslint lib test"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "bin": {
+    "statsd-appoptics": "./bin/statsd-appoptics"
+  }
+}
