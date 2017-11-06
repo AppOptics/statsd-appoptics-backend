@@ -9,7 +9,7 @@
 ## Overview
 
 This is a pluggable backend for [StatsD][statsd], which
-publishes stats to [AppOptics](https://my.appoptics.com). 
+publishes stats to [AppOptics](https://www.appoptics.com). 
 
 ## Requirements
 
