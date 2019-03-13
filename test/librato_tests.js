@@ -10,8 +10,9 @@ const http = require('http');
 const config = {
   debug: false,
   appoptics: {
-    token: '-',
-    api: 'http://127.0.0.1:' + serverPort,
+      token: '-',
+      api: 'http://127.0.0.1:' + serverPort,
+      host: '127.0.0.1',
   },
 };
 
@@ -111,7 +112,7 @@ module.exports.tags = {
                 test.ok(requestBody);
                 test.equal(measurement.name, 'my_gauge');
                 test.equal(measurement.value, 1);
-                test.deepEqual(measurement.tags, {});
+                test.deepEqual(measurement.tags, {host: '127.0.0.1'});
                 test.done();
              });
 
@@ -127,7 +128,7 @@ module.exports.tags = {
                 test.ok(requestBody);
                 test.equal(measurement.name, 'my_gauge');
                 test.equal(measurement.value, 1);
-                test.deepEqual(measurement.tags, {foo: 'bar'});
+                test.deepEqual(measurement.tags, {host: '127.0.0.1', foo: 'bar'});
                 test.done();
              });
 
@@ -144,8 +145,9 @@ module.exports.tags = {
                 test.equal(measurement.name, 'my_gauge');
                 test.equal(measurement.value, 1);
                 test.deepEqual(measurement.tags, {
-                  foo: 'bar',
-                  biz: 'baz',
+                    host: '127.0.0.1',
+                    foo: 'bar',
+                    biz: 'baz',
                 });
                 test.done();
              });
@@ -173,7 +175,7 @@ module.exports.tags = {
         test.equal(measurement.min, 41);
         test.equal(measurement.max, 41);
         test.equal(measurement.sum, 41);
-        test.deepEqual(measurement.tags, {tag: 'foo'});
+        test.deepEqual(measurement.tags, {host: '127.0.0.1', tag: 'foo'});
         test.done();
       });
 
@@ -220,7 +222,7 @@ module.exports.tags = {
         test.equal(hundredth.stddev_m2, 20.502191816511857);
         test.equal(hundredth.max, 69);
         test.equal(hundredth.sum, 538);
-        test.deepEqual(hundredth.tags, {tag: 'foo'});
+        test.deepEqual(hundredth.tags, {host: '127.0.0.1', tag: 'foo'});
 
         let measurement = requestBody.measurements[1];
         test.ok(measurement);
@@ -231,7 +233,7 @@ module.exports.tags = {
         test.equal(measurement.stddev_m2, 16.86799237214277);
         test.equal(measurement.max, 56);
         test.equal(measurement.sum, 407);
-        test.deepEqual(measurement.tags, {tag: 'foo'});
+        test.deepEqual(measurement.tags, {host: '127.0.0.1', tag: 'foo'});
         test.done();
       });
 
@@ -276,7 +278,7 @@ module.exports.tags = {
         test.equal(measurement.stddev_m2, 20.502191816511857);
         test.equal(measurement.max, 69);
         test.equal(measurement.sum, 538);
-        test.deepEqual(measurement.tags, {tag: 'foo'});
+        test.deepEqual(measurement.tags, {host: '127.0.0.1', tag: 'foo'});
         test.done();
       });
 
@@ -303,7 +305,7 @@ module.exports.tags = {
                 test.equal(measurement.min, 41);
                 test.equal(measurement.max, 73.5);
                 test.equal(measurement.sum, 114.5);
-                test.deepEqual(measurement.tags, {tag: 'foo'});
+                test.deepEqual(measurement.tags, {host: '127.0.0.1', tag: 'foo'});
                 test.done();
              });
 
@@ -328,7 +330,7 @@ module.exports.tags = {
                 test.equal(hundredth.min, 10);
                 test.equal(hundredth.max, 10);
                 test.equal(hundredth.sum, 10);
-                test.deepEqual(hundredth.tags, {tag: 'foo'});
+                test.deepEqual(hundredth.tags, {host: '127.0.0.1', tag: 'foo'});
 
                 let measurement = requestBody.measurements[1];
                 test.ok(measurement);
@@ -337,7 +339,7 @@ module.exports.tags = {
                 test.equal(measurement.min, 10);
                 test.equal(measurement.max, 10);
                 test.equal(measurement.sum, 10);
-                test.deepEqual(measurement.tags, {tag: 'foo'});
+                test.deepEqual(measurement.tags, {host: '127.0.0.1', tag: 'foo'});
                 test.done();
              });
 
@@ -450,7 +452,7 @@ module.exports.tags = {
                     test.ok(requestBody);
                     test.equal(measurement.name, 'my_gauge');
                     test.equal(measurement.value, 1);
-                    test.deepEqual(measurement.tags, {foo: 'bar'});
+                    test.deepEqual(measurement.tags, {test: true, host: '127.0.0.1', foo: 'bar'});
                     test.done();
                   });
 

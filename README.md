@@ -162,7 +162,7 @@ config in the appoptics configuration section of the StatsD config file:
 }
 ```
 
-Once your config has been updated, all metrics submitted to AppOptics will include your defined tags.
+Once your config has been updated, all metrics submitted to AppOptics will include your defined tags in the request payload and along with the actual measure tags.
 
 
 We also support tags at the per-stat level should you need more detailed tagging. We provide a naming syntax for your stats so you can submit tags for each stat. That syntax is as follows:
