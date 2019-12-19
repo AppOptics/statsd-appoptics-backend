@@ -2,7 +2,7 @@
   "author": "Mike Heffner <mike@solarwinds.cloud>",
   "name": "statsd-appoptics-backend",
   "description": "A StatsD backend for AppOptics Metrics",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "homepage": "https://github.com/appoptics/statsd-appoptics-backend",
   "repository": {
@@ -17,6 +17,10 @@
     {
       "name": "Michael Beale",
       "email": "mbeale@solarwinds.cloud"
+    },
+    {
+      "name": "Bruce MacNaughton",
+      "email": "bmacnaughton@gmail.com"
     }
   ],
   "keywords": [
@@ -25,10 +29,7 @@
     "statsd"
   ],
   "engines": {
-    "node": ">=0.8"
-  },
-  "dependencies": {
-    "extend": "^3.0.0"
+    "node": ">=4.0.0"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
