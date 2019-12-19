@@ -2,7 +2,7 @@
   "author": "Mike Heffner <mike@solarwinds.cloud>",
   "name": "statsd-appoptics-backend",
   "description": "A StatsD backend for AppOptics Metrics",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "license": "MIT",
   "homepage": "https://github.com/appoptics/statsd-appoptics-backend",
   "repository": {
