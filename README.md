@@ -19,7 +19,7 @@ publishes stats to [AppOptics](https://www.appoptics.com).
 ## Installation
 
     $ cd /path/to/statsd
-    $ npm install statsd-appoptics-backend
+    $ npm install @appoptics/statsd-appoptics-backend
 
 ## Configuration
 
