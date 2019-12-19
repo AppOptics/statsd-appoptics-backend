@@ -16,29 +16,28 @@ const config = {
 };
 
 module.exports.debugConfig = {
-  setUp: function(callback) {
+  setUp: function (callback) {
     this.emitter = new events.EventEmitter();
     global.util = this.util = require('util');
     this.apiServer = nock('http://127.0.0.1:36001')
-                         .defaultReplyHeaders({'Content-Type': 'application/json'});
-
+      .defaultReplyHeaders({'Content-Type': 'application/json'});
 
     this.logSpy = sinon.spy(global.util, 'log');
 
     callback();
   },
 
-  tearDown: function(callback) {
+  tearDown: function (callback) {
     config.debug = false;
     global.util.log.restore();
     callback();
   },
 
-  testDebugConfigTrue: function(test) {
+  testDebugConfigTrue: function (test) {
     test.expect(1);
 
     config.debug = true;
-    let metrics = {gauges: {my_gauge: 1}};
+    const metrics = {gauges: {my_gauge: 1}};
 
     appoptics.init(null, config, this.emitter, this.util);
     this.emitter.emit('flush', 123, metrics);
@@ -47,10 +46,10 @@ module.exports.debugConfig = {
     test.done();
   },
 
-  testDebugConfigFalse: function(test) {
+  testDebugConfigFalse: function (test) {
     test.expect(1);
 
-    let metrics = {gauges: {my_gauge: 1}};
+    const metrics = {gauges: {my_gauge: 1}};
 
     appoptics.init(null, config, this.emitter, this.util);
     test.ok(!this.logSpy.called);
@@ -59,10 +58,10 @@ module.exports.debugConfig = {
     test.done();
   },
 
-  testNoLogger: function(test) {
+  testNoLogger: function (test) {
     test.expect(1);
 
-    let metrics = {gauges: {my_gauge: 1}};
+    const metrics = {gauges: {my_gauge: 1}};
 
     appoptics.init(null, config, this.emitter);
     test.ok(!this.logSpy.called);
@@ -71,9 +70,9 @@ module.exports.debugConfig = {
     test.done();
   },
 
-  testLoggerNoDebugConfig: function(test) {
+  testLoggerNoDebugConfig: function (test) {
     test.expect(1);
-    let metrics = {gauges: {my_gauge: 1}};
+    const metrics = {gauges: {my_gauge: 1}};
     config.debug = null;
 
     appoptics.init(null, config, this.emitter, this.util);
@@ -86,76 +85,76 @@ module.exports.debugConfig = {
 };
 
 module.exports.tags = {
-  setUp: function(callback) {
+  setUp: function (callback) {
     this.emitter = new events.EventEmitter();
 
     this.apiServer = nock('http://127.0.0.1:36001')
-                         .defaultReplyHeaders({'Content-Type': 'application/json'});
+      .defaultReplyHeaders({'Content-Type': 'application/json'});
 
     appoptics.init(null, config, this.emitter);
     this.httpSpy = sinon.spy(http, 'request');
     callback();
   },
 
-  tearDown: function(callback) {
+  tearDown: function (callback) {
     http.request.restore();
     callback();
   },
 
-  testValidMeasurementNoTags: function(test) {
+  testValidMeasurementNoTags: function (test) {
     test.expect(4);
-    let metrics = {gauges: {my_gauge: 1}};
+    const metrics = {gauges: {my_gauge: 1}};
     this.apiServer.post('/v1/measurements')
-             .reply(200, (uri, requestBody) => {
-                let measurement = requestBody.measurements[0];
-                test.ok(requestBody);
-                test.equal(measurement.name, 'my_gauge');
-                test.equal(measurement.value, 1);
-                test.deepEqual(measurement.tags, {});
-                test.done();
-             });
+      .reply(200, (uri, requestBody) => {
+        const measurement = requestBody.measurements[0];
+        test.ok(requestBody);
+        test.equal(measurement.name, 'my_gauge');
+        test.equal(measurement.value, 1);
+        test.deepEqual(measurement.tags, {});
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testValidMeasurementSingleTag: function(test) {
+  testValidMeasurementSingleTag: function (test) {
     test.expect(4);
-    let metrics = {gauges: {'my_gauge#foo=bar': 1}};
+    const metrics = {gauges: {'my_gauge#foo=bar': 1}};
     this.apiServer.post('/v1/measurements')
-             .reply(200, (uri, requestBody) => {
-                let measurement = requestBody.measurements[0];
-                test.ok(requestBody);
-                test.equal(measurement.name, 'my_gauge');
-                test.equal(measurement.value, 1);
-                test.deepEqual(measurement.tags, {foo: 'bar'});
-                test.done();
-             });
+      .reply(200, (uri, requestBody) => {
+        const measurement = requestBody.measurements[0];
+        test.ok(requestBody);
+        test.equal(measurement.name, 'my_gauge');
+        test.equal(measurement.value, 1);
+        test.deepEqual(measurement.tags, {foo: 'bar'});
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testValidMeasurementMultipleTags: function(test) {
+  testValidMeasurementMultipleTags: function (test) {
     test.expect(4);
-    let metrics = {gauges: {'my_gauge#foo=bar,biz=baz': 1}};
+    const metrics = {gauges: {'my_gauge#foo=bar,biz=baz': 1}};
     this.apiServer.post('/v1/measurements')
-             .reply(200, (uri, requestBody) => {
-                let measurement = requestBody.measurements[0];
-                test.ok(requestBody);
-                test.equal(measurement.name, 'my_gauge');
-                test.equal(measurement.value, 1);
-                test.deepEqual(measurement.tags, {
-                  foo: 'bar',
-                  biz: 'baz',
-                });
-                test.done();
-             });
+      .reply(200, (uri, requestBody) => {
+        const measurement = requestBody.measurements[0];
+        test.ok(requestBody);
+        test.equal(measurement.name, 'my_gauge');
+        test.equal(measurement.value, 1);
+        test.deepEqual(measurement.tags, {
+          foo: 'bar',
+          biz: 'baz',
+        });
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testTimerWithOneMeasurement: function(test) {
+  testTimerWithOneMeasurement: function (test) {
     test.expect(8);
-    let metrics = {
+    const metrics = {
       timers: {
         'my_timer#tag=foo': [
           41,
@@ -165,7 +164,7 @@ module.exports.tags = {
     };
     this.apiServer.post('/v1/measurements')
       .reply(200, (uri, requestBody) => {
-        let measurement = requestBody.measurements[0];
+        const measurement = requestBody.measurements[0];
         test.ok(measurement);
         test.equal(measurement.name, 'my_timer');
         test.equal(measurement.value, undefined);
@@ -181,9 +180,9 @@ module.exports.tags = {
   },
 
 
-  testLargeTimersPercentiles: function(test) {
+  testLargeTimersPercentiles: function (test) {
     test.expect(18);
-    let metrics = {
+    const metrics = {
       timers: {
         'my_timer#tag=foo': [
           1,
@@ -211,7 +210,7 @@ module.exports.tags = {
     };
     this.apiServer.post('/v1/measurements')
       .reply(200, (uri, requestBody) => {
-        let hundredth = requestBody.measurements[0];
+        const hundredth = requestBody.measurements[0];
         test.ok(hundredth);
         test.equal(hundredth.name, 'my_timer');
         test.equal(hundredth.value, undefined);
@@ -222,7 +221,7 @@ module.exports.tags = {
         test.equal(hundredth.sum, 538);
         test.deepEqual(hundredth.tags, {tag: 'foo'});
 
-        let measurement = requestBody.measurements[1];
+        const measurement = requestBody.measurements[1];
         test.ok(measurement);
         test.equal(measurement.name, 'my_timer.90');
         test.equal(measurement.value, undefined);
@@ -238,9 +237,9 @@ module.exports.tags = {
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testLargeTimers: function(test) {
+  testLargeTimers: function (test) {
     test.expect(9);
-    let metrics = {
+    const metrics = {
       timers: {
         'my_timer#tag=foo': [
           1,
@@ -267,7 +266,7 @@ module.exports.tags = {
     };
     this.apiServer.post('/v1/measurements')
       .reply(200, (uri, requestBody) => {
-        let measurement = requestBody.measurements[0];
+        const measurement = requestBody.measurements[0];
         test.ok(measurement);
         test.equal(measurement.name, 'my_timer');
         test.equal(measurement.value, undefined);
@@ -283,9 +282,9 @@ module.exports.tags = {
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testTimers: function(test) {
+  testTimers: function (test) {
     test.expect(7);
-    let metrics = {
+    const metrics = {
       timers: {
         'my_timer#tag=foo': [
           41,
@@ -295,24 +294,24 @@ module.exports.tags = {
       timer_data: {'my_timer#tag=foo': null},
     };
     this.apiServer.post('/v1/measurements')
-             .reply(200, (uri, requestBody) => {
-                let measurement = requestBody.measurements[0];
-                test.ok(measurement);
-                test.equal(measurement.name, 'my_timer');
-                test.equal(measurement.value, undefined);
-                test.equal(measurement.min, 41);
-                test.equal(measurement.max, 73.5);
-                test.equal(measurement.sum, 114.5);
-                test.deepEqual(measurement.tags, {tag: 'foo'});
-                test.done();
-             });
+      .reply(200, (uri, requestBody) => {
+        const measurement = requestBody.measurements[0];
+        test.ok(measurement);
+        test.equal(measurement.name, 'my_timer');
+        test.equal(measurement.value, undefined);
+        test.equal(measurement.min, 41);
+        test.equal(measurement.max, 73.5);
+        test.equal(measurement.sum, 114.5);
+        test.deepEqual(measurement.tags, {tag: 'foo'});
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testTimersPercentiles: function(test) {
+  testTimersPercentiles: function (test) {
     test.expect(14);
-    let metrics = {
+    const metrics = {
       timers: {
         'my_timer#tag=foo': [10],
       },
@@ -320,91 +319,91 @@ module.exports.tags = {
       pctThreshold: {99: 99},
     };
     this.apiServer.post('/v1/measurements')
-             .reply(200, (uri, requestBody) => {
-                let hundredth = requestBody.measurements[0];
-                test.ok(hundredth);
-                test.equal(hundredth.name, 'my_timer');
-                test.equal(hundredth.value, undefined);
-                test.equal(hundredth.min, 10);
-                test.equal(hundredth.max, 10);
-                test.equal(hundredth.sum, 10);
-                test.deepEqual(hundredth.tags, {tag: 'foo'});
+      .reply(200, (uri, requestBody) => {
+        const hundredth = requestBody.measurements[0];
+        test.ok(hundredth);
+        test.equal(hundredth.name, 'my_timer');
+        test.equal(hundredth.value, undefined);
+        test.equal(hundredth.min, 10);
+        test.equal(hundredth.max, 10);
+        test.equal(hundredth.sum, 10);
+        test.deepEqual(hundredth.tags, {tag: 'foo'});
 
-                let measurement = requestBody.measurements[1];
-                test.ok(measurement);
-                test.equal(measurement.name, 'my_timer.99');
-                test.equal(measurement.value, undefined);
-                test.equal(measurement.min, 10);
-                test.equal(measurement.max, 10);
-                test.equal(measurement.sum, 10);
-                test.deepEqual(measurement.tags, {tag: 'foo'});
-                test.done();
-             });
+        const measurement = requestBody.measurements[1];
+        test.ok(measurement);
+        test.equal(measurement.name, 'my_timer.99');
+        test.equal(measurement.value, undefined);
+        test.equal(measurement.min, 10);
+        test.equal(measurement.max, 10);
+        test.equal(measurement.sum, 10);
+        test.deepEqual(measurement.tags, {tag: 'foo'});
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testIgnoreBrokenMetrics: function(test) {
+  testIgnoreBrokenMetrics: function (test) {
     test.expect(3);
-    let metrics = {
+    const metrics = {
       gauges: {
         cool_gauge: 123,
         bad_counter: 321,
       },
     };
-    let errors = {errors: {params: {type: ['\'bad_counter\'' + ' is a counter, but was' + ' submitted as different type']}}};
+    const errors = {errors: {params: {type: ['\'bad_counter\'' + ' is a counter, but was' + ' submitted as different type']}}};
 
     this.apiServer.post('/v1/measurements')
-                  .reply(400, JSON.stringify(errors));
+      .reply(400, JSON.stringify(errors));
 
     this.emitter.emit('flush', 123, metrics);
 
     // Similuate another flush...
     setTimeout(() => {
       this.apiServer.post('/v1/measurements')
-               .reply(200, (uri, requestBody) => {
-                 let measurements = requestBody.measurements;
-                 let gaugeNames = measurements.map((gauge) => gauge.name);
-                 test.equal(requestBody.measurements.length, 1);
-                 test.equal(gaugeNames.indexOf('cool_gauge'), 0);
-                 test.equal(gaugeNames.indexOf('bad_counter'), -1);
-                 test.done();
-               });
+        .reply(200, (uri, requestBody) => {
+          const measurements = requestBody.measurements;
+          const gaugeNames = measurements.map((gauge) => gauge.name);
+          test.equal(requestBody.measurements.length, 1);
+          test.equal(gaugeNames.indexOf('cool_gauge'), 0);
+          test.equal(gaugeNames.indexOf('bad_counter'), -1);
+          test.done();
+        });
 
       this.emitter.emit('flush', 123, metrics);
     }, 500);
   },
 
-  testMaxBatchSize: function(test) {
+  testMaxBatchSize: function (test) {
     test.expect(2);
-    var gauges = {};
-    for (var i = 0; i < 500; i++) {
-      var key = 'gauge' + i;
+    const gauges = {};
+    for (let i = 0; i < 500; i++) {
+      const key = 'gauge' + i;
       gauges[key] = 1;
     }
-    var metrics = {gauges: gauges};
+    const metrics = {gauges: gauges};
     this.apiServer.post('/v1/measurements')
-                  .reply(200, (uri, requestBody) => {
-                    test.ok(requestBody.measurements);
-                    test.equal(requestBody.measurements.length, 500);
-                    test.done();
-                  });
+      .reply(200, (uri, requestBody) => {
+        test.ok(requestBody.measurements);
+        test.equal(requestBody.measurements.length, 500);
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
 
-  testBatchProperRequestCount: function(test) {
+  testBatchProperRequestCount: function (test) {
     test.expect(3);
-    var gauges = {};
-    for (var i = 0; i < 500; i++) {
-      var key = 'gauge' + i;
+    const gauges = {};
+    for (let i = 0; i < 500; i++) {
+      const key = 'gauge' + i;
       gauges[key] = 1;
     }
-    var metrics = {gauges: gauges};
+    let metrics = {gauges: gauges};
     this.apiServer.post('/v1/measurements')
-                  .reply(200, (uri, requestBody) => {
-                    test.ok(requestBody.measurements);
-                  });
+      .reply(200, (uri, requestBody) => {
+        test.ok(requestBody.measurements);
+      });
 
     this.emitter.emit('flush', 123, metrics);
 
@@ -415,8 +414,8 @@ module.exports.tags = {
       test.ok(this.httpSpy.calledOnce);
 
       // Try with a bigger batch...
-      for (var i = 0; i < 1500; i++) {
-        var key = 'gauge' + i;
+      for (let i = 0; i < 1500; i++) {
+        const key = 'gauge' + i;
         gauges[key] = 1;
       }
       metrics = {gauges: gauges};
@@ -435,20 +434,20 @@ module.exports.tags = {
     }, 500);
   },
 
-  testValidMeasurementTopLevelTag: function(test) {
+  testValidMeasurementTopLevelTag: function (test) {
     config.appoptics.host = '127.0.0.1';
     config.appoptics.tags = {test: true};
     config.appoptics.mergeGlobalTags = true;
     appoptics.init(null, config, this.emitter);
 
     test.expect(5);
-    let metrics = {gauges: {'my_gauge#foo=bar': 1}};
+    const metrics = {gauges: {'my_gauge#foo=bar': 1}};
     this.apiServer.post('/v1/measurements')
       .reply(200, (uri, requestBody) => {
         // Top-level tags
         test.deepEqual(requestBody.tags, {test: true, host: '127.0.0.1'});
 
-        let measurement = requestBody.measurements[0];
+        const measurement = requestBody.measurements[0];
         test.ok(requestBody);
         test.equal(measurement.name, 'my_gauge');
         test.equal(measurement.value, 1);
@@ -459,20 +458,20 @@ module.exports.tags = {
     this.emitter.emit('flush', 123, metrics);
   },
 
-  verifySuppressingHostButMergingGlobalTags: function(test) {
+  verifySuppressingHostButMergingGlobalTags: function (test) {
     config.appoptics.host = undefined;
     config.appoptics.tags = {globalTestTag: 'for sure'};
     config.appoptics.mergeGlobalTags = true;
     appoptics.init(null, config, this.emitter);
 
     test.expect(5);
-    let metrics = {gauges: {'my_gauge#foo=bar': 1}};
+    const metrics = {gauges: {'my_gauge#foo=bar': 1}};
     this.apiServer.post('/v1/measurements')
       .reply(200, (uri, requestBody) => {
         // Top-level tags
         test.deepEqual(requestBody.tags, {globalTestTag: 'for sure'});
 
-        let measurement = requestBody.measurements[0];
+        const measurement = requestBody.measurements[0];
         test.ok(requestBody);
         test.equal(measurement.name, 'my_gauge');
         test.equal(measurement.value, 1);
