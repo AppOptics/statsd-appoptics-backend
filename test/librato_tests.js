@@ -410,7 +410,8 @@ module.exports.tags = {
 
     // Let some time pass...
     setTimeout(() => {
-      // There should have ever been one submission because we hit our maxBatchSize
+      // There should have ever been one submission because we
+      // hit our maxBatchSize
       test.ok(this.httpSpy.calledOnce);
 
       // Try with a bigger batch...
@@ -437,24 +438,50 @@ module.exports.tags = {
   testValidMeasurementTopLevelTag: function(test) {
     config.appoptics.host = '127.0.0.1';
     config.appoptics.tags = {test: true};
+    config.appoptics.mergeGlobalTags = true;
     appoptics.init(null, config, this.emitter);
 
     test.expect(5);
     let metrics = {gauges: {'my_gauge#foo=bar': 1}};
     this.apiServer.post('/v1/measurements')
-                  .reply(200, (uri, requestBody) => {
-                    // Top-level tags
-                    test.deepEqual(requestBody.tags, {test: true, host: '127.0.0.1'});
+      .reply(200, (uri, requestBody) => {
+        // Top-level tags
+        test.deepEqual(requestBody.tags, {test: true, host: '127.0.0.1'});
 
-                    let measurement = requestBody.measurements[0];
-                    test.ok(requestBody);
-                    test.equal(measurement.name, 'my_gauge');
-                    test.equal(measurement.value, 1);
-                    test.deepEqual(measurement.tags, {foo: 'bar'});
-                    test.done();
-                  });
+        let measurement = requestBody.measurements[0];
+        test.ok(requestBody);
+        test.equal(measurement.name, 'my_gauge');
+        test.equal(measurement.value, 1);
+        test.deepEqual(measurement.tags, {foo: 'bar', test: true, host: '127.0.0.1'});
+        test.done();
+      });
 
     this.emitter.emit('flush', 123, metrics);
   },
+
+  verifySuppressingHostButMergingGlobalTags: function(test) {
+    config.appoptics.host = undefined;
+    config.appoptics.tags = {globalTestTag: 'for sure'};
+    config.appoptics.mergeGlobalTags = true;
+    appoptics.init(null, config, this.emitter);
+
+    test.expect(5);
+    let metrics = {gauges: {'my_gauge#foo=bar': 1}};
+    this.apiServer.post('/v1/measurements')
+      .reply(200, (uri, requestBody) => {
+        // Top-level tags
+        test.deepEqual(requestBody.tags, {globalTestTag: 'for sure'});
+
+        let measurement = requestBody.measurements[0];
+        test.ok(requestBody);
+        test.equal(measurement.name, 'my_gauge');
+        test.equal(measurement.value, 1);
+        test.deepEqual(measurement.tags, {foo: 'bar', globalTestTag: 'for sure'});
+        test.done();
+      });
+
+    this.emitter.emit('flush', 123, metrics);
+  },
+
 };
 
