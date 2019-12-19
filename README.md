@@ -9,7 +9,7 @@
 ## Overview
 
 This is a pluggable backend for [StatsD][statsd], which
-publishes stats to [AppOptics](https://www.appoptics.com). 
+publishes stats to [AppOptics](https://www.appoptics.com).
 
 ## Requirements
 
@@ -78,6 +78,8 @@ options under the top-level `appoptics` hash:
 | includeMetrics | An array of JavaScript regular expressions. Only metrics that match any of the regular expressions will be sent to AppOptics. Defaults to an empty array.<br/><br/>{includeMetrics: [/^my\.included\.metrics/, /^my.specifically.included.metric$/]} |
 | excludeMetrics | An array of JavaScript regular expressions. Metrics which match any of the regular expressions will NOT be sent to AppOptics. If includedMetrics is specified, then patterns will be matched against the resulting list of included metrics. Defaults to an empty array.<br/><br/>{excludeMetrics: [/^my\.excluded\.metrics/, /^my.specifically.excluded.metric$/]} |
 | globalPrefix | A string to prepend to all measurement names sent to AppOptics. If set, a dot will automatically be added as separator between prefix and measurement name. |
+| tags | Define global tags that are used as defaults in all measurements. If per-stat tags are defined these tags are not included unless `mergeGlobalTags` is set. |
+| mergeGlobalTags | If truthy merge global tags into any per-stat tags; if a tag is specified in both places the per-stat tag is used. If falsey and per-stat tags are set then no global tags will be included. |
 
 ## Reducing published data for inactive stats
 
@@ -150,31 +152,44 @@ protocol to https in the URI.
 
 ## Tags
 
-Our backend plugin offers basic tagging support for your metrics you submit to AppOptics. You can specify what tags you want to submit to AppOptics using the *tags*
-config in the appoptics configuration section of the StatsD config file:
+Our backend plugin offers basic tagging support for your metrics you submit
+to AppOptics. You can specify what tags you want to submit to AppOptics using
+the *tags* property in the appoptics configuration section of the StatsD
+config file:
 
 
 ```js
 {
   "appoptics" : {
-    "tags": { "os" : "ubuntu", "host" : "production-web-server-1", ... }
+    "tags": {
+      "os" : "ubuntu",
+      "host" : "production-web-server-1",
+      ...
+    }
   }
 }
 ```
 
-Once your config has been updated, all metrics submitted to AppOptics will include your defined tags.
+The `tags` property defines global tags, i.e., tags that are included in all
+metrics submitted to AppOptics in addition to any per-stat tags (next
+paragraph).
 
 
-We also support tags at the per-stat level should you need more detailed tagging. We provide a naming syntax for your stats so you can submit tags for each stat. That syntax is as follows:
+We also support tags at the per-stat level should you need more detailed tagging.
+The syntax for per-stat tags is:
 
 ```
-metric.name#tag1=value,tag2=value:value
+metric.name#tag1=value1,tag2=value2:metric-value
 ```
 
-Starting with a `#`, you would pass in a comma-separated list of tags and we will parse out the tags and values. Given the above example, a stat matching
-the above syntax will be submitted as metric to AppOptics with a name of `metric.name`, a value of `value` and with the tags `tag1=value` and `tag2=value`. You are welcome to use any statsd client of your choosing.
+Starting with a `#`, supply a comma-separated list of tag-name=value pairs
+to be sent with this specific metric. For the example above, the following
+is submitted to AppOptics: name of `metric.name` with a value of `metric-value`
+with the tags `tag1=value1` and `tag2=value2`. You are welcome to use any
+statsd client of your choosing.
 
-Please note that in order to use tags, the statsd config option `keyNameSanitize` must be set to `false` to properly parse tags out of your stat name.
+Please note that in order to use tags, the statsd config option `keyNameSanitize`
+must be set to `false` to allow these tags in your config file name.
 
 ## Docker
 
