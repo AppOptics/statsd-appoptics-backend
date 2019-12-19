@@ -1,6 +1,5 @@
 {
-  "author": "Mike Heffner <mike@solarwinds.cloud>",
-  "name": "statsd-appoptics-backend",
+  "name": "@appoptics/statsd-appoptics-backend",
   "description": "A StatsD backend for AppOptics Metrics",
   "version": "1.2.0",
   "license": "MIT",
@@ -9,6 +8,7 @@
     "type": "git",
     "url": "git://github.com/appoptics/statsd-appoptics-backend.git"
   },
+  "author": "Mike Heffner <mike@solarwinds.cloud>",
   "contributors": [
     {
       "name": "Bryan Mikaelian",
