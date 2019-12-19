@@ -6,9 +6,11 @@
       "one-var-declaration-per-line": "error",
       "quotes": ["error", "single"],
       "no-var": "off",
-      "max-len": "warn",
-      "guard-for-in": "warn",
-      "eqeqeq": "warn"
+      "max-len": ["warn", {"ignoreStrings": true}],
+      "guard-for-in": "off",
+      "eqeqeq": "warn",
+      "no-multi-spaces": ["warn", {"ignoreEOLComments": true}],
+      "no-console": "error"
     },
     "extends": "google"
 }
